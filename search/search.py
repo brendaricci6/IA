@@ -92,89 +92,84 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     "*** YOUR CODE HERE ***"
     fringe = util.Stack()
 
-    # Inicializa um conjunto para armazenar os estados já visitados e evitar ciclos e redundância.
-    # Isso implementa a busca em grafo.
+    #conjunto para armazenar os estados já visitados e evitar ciclos e redundância
     visited = set()
 
-    # Pega o estado inicial e o adiciona à fronteira com um caminho vazio.
+    #adiciona o estado inicial na fronteira com um caminho vazio
     start_state = problem.getStartState()
     fringe.push((start_state, []))
 
-    # Loop principal que continua enquanto houver nós na fronteira para explorar.
+    #continua enquanto houver nós na fronteira para explorar
     while not fringe.isEmpty():
-        # Remove o último nó adicionado da pilha (comportamento DFS).
+        #remove o último nó adicionado da pilha
         current_state, actions = fringe.pop()
 
-        # Se o estado atual já foi visitado, pula para a próxima iteração para evitar reprocessamento.
+        #se o estado atual já foi visitado, pula para a próxima iteração
         if current_state in visited:
             continue
 
-        # Se o estado atual é o estado objetivo, encontramos a solução.
-        # Retorna a lista de ações que nos levaram até aqui.
+        # ae o estado atual é o estado objetivo ent retorna a lista de ações q levam até aqui.
         if problem.isGoalState(current_state):
             return actions
 
-        # Adiciona o estado atual ao conjunto de visitados para não explorá-lo novamente.
+        # adiciona o estado atual ao conjunto de visitados
         visited.add(current_state)
 
-        # Obtém os sucessores do estado atual.
+        #acha os sucessores do estado atual
         successors = problem.getSuccessors(current_state)
 
-        # Itera sobre cada sucessor.
+        # Iterações sobre cada sucessor,
         for next_state, action, cost in successors:
-            # Se o estado sucessor ainda não foi visitado, o adicionamos à fronteira.
+            #se o estado sucessor ainda não foi visitado
+            #adiciona à fronteira
             if next_state not in visited:
-                # Cria o novo caminho adicionando a ação atual ao caminho existente.
+                #criação de umnovo caminho e adicionado a ação atual ao caminho existente
                 new_actions = actions + [action]
-                # Adiciona o estado sucessor e seu novo caminho à pilha.
+                #adiciona o estado sucessor e seu novo caminho na pilha
                 fringe.push((next_state, new_actions))
 
-    # Se a fronteira ficar vazia e o objetivo não for encontrado, retorna uma lista vazia.
+    #se a fronteira ficar vazia e o objetivo não for encontrado
+    #retorna uma lista vazia.
     return []
     #util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    # Inicializa a fronteira usando uma Fila (Queue) para o comportamento FIFO (First-In, First-Out) do BFS.
-    # A fila armazenará tuplas contendo o estado e o caminho (lista de ações) para alcançá-lo.
+    #inicializa a fronteira usando uma fila (FIFO
     fringe = util.Queue()
 
-    # Inicializa um conjunto para armazenar os estados já visitados e evitar ciclos e redundância.
-    # Isso é crucial para a busca em grafo e para a eficiência.
+    #inicializa um conjunto para armazenar os estados já visitados e evitar ciclos e redundância
     visited = set()
 
-    # Pega o estado inicial e o adiciona à fronteira com um caminho vazio.
+    #adiciona o estado inicial a fronteira com um caminho vazio
     start_state = problem.getStartState()
     fringe.push((start_state, []))
     
-    # Adicionamos o estado inicial ao conjunto de visitados imediatamente, pois ele está na fronteira.
-    # Isso evita adicionar o mesmo estado múltiplas vezes à fila se houver vários caminhos para ele
-    # antes que ele seja expandido.
+    #adiciona o estado inicial ao conjunto de visitados imediatamente
     visited.add(start_state)
 
-    # Loop principal que continua enquanto houver nós na fronteira para explorar.
+    #enquanto houver nós na fronteira para explorar
     while not fringe.isEmpty():
-        # Remove o nó mais antigo da fila (comportamento BFS).
+        #remoção do nó mais antigo da fila
         current_state, actions = fringe.pop()
 
-        # Se o estado atual é o estado objetivo, encontramos a solução.
-        # Como o BFS explora nível a nível, este será o caminho mais curto em número de ações.
+        #verifica se o estado atual é o estado objetivo
         if problem.isGoalState(current_state):
             return actions
 
-        # Obtém os sucessores do estado atual.
+        #obtem os sucessores do estado atual
         successors = problem.getSuccessors(current_state)
 
-        # Itera sobre cada sucessor.
+        #itera cada sucessor
         for next_state, action, cost in successors:
-            # Se o estado sucessor ainda não foi visitado, o processamos.
+            #se ele não foi visitado, ele é processado
             if next_state not in visited:
-                # Adiciona o sucessor ao conjunto de visitados para não o adicionar à fila novamente.
+                #adiciona o sucessor ao conjunto de visitados
                 visited.add(next_state)
-                # Cria o novo caminho adicionando a ação atual ao caminho existente.
+                #cria o novo caminho adicionando a ação atual ao caminho existente
                 new_actions = actions + [action]
-                # Adiciona o estado sucessor e seu novo caminho à fila.
+                # Adiciona o estado sucessor e seu novo caminho
                 fringe.push((next_state, new_actions))
 
     # Se a fronteira ficar vazia e o objetivo não for encontrado, retorna uma lista vazia.
@@ -185,51 +180,43 @@ def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     """Busca primeiro o nó de menor custo total."""
-    # Inicializa a fronteira usando uma Fila de Prioridade (PriorityQueue).
-    # Ela armazenará uma tupla (item, prioridade), onde o item é (estado, caminho)
-    # e a prioridade é o custo acumulado para chegar àquele estado.
+    # Inicializa a fronteira usando uma Fila de Prioridade
     fringe = util.PriorityQueue()
 
-    # Inicializa um conjunto para armazenar os estados já visitados.
-    # Como a Fila de Prioridade garante que a primeira vez que visitamos um nó
-    # é pelo caminho de menor custo, não precisamos revisitá-lo.
+    # Inicializa um conjunto para armazenar os estados visitados
     visited = set()
 
-    # Pega o estado inicial e o adiciona à fronteira com um caminho vazio e custo 0.
+    # Adiciona o estado inicial e o adiciona na fronteira
     start_state = problem.getStartState()
-    fringe.push((start_state, []), 0) # O item é (estado, ações), a prioridade é o custo.
+    fringe.push((start_state, []), 0)
 
-    # Loop principal que continua enquanto houver nós na fronteira para explorar.
+    #enquanto houver nós na fronteira para explorar
     while not fringe.isEmpty():
-        # Remove o nó com a menor prioridade (menor custo) da fila.
+        # remove o nó com a menor prioridade
         current_state, actions = fringe.pop()
 
-        # Se já expandimos este estado, pulamos.
-        # Isso é crucial para a eficiência.
         if current_state in visited:
             continue
 
-        # Adiciona o estado atual ao conjunto de visitados para não expandi-lo novamente.
+        #add o estado atual ao conjunto de visitaos
         visited.add(current_state)
 
-        # Se o estado atual é o estado objetivo, encontramos a solução de menor custo.
+        #se o estado atual é o estado objetivo
         if problem.isGoalState(current_state):
+            #retorna a solução
             return actions
 
-        # Obtém os sucessores do estado atual.
+        #sucessores do estado atual
         successors = problem.getSuccessors(current_state)
 
-        # Itera sobre cada sucessor.
+        #itera para cada sucessor.
         for next_state, action, cost in successors:
-            # Se o estado sucessor ainda não foi visitado, o adicionamos à fronteira.
             if next_state not in visited:
-                # Cria o novo caminho e calcula seu custo total.
                 new_actions = actions + [action]
                 new_cost = problem.getCostOfActions(new_actions)
-                # Adiciona o sucessor à fila de prioridade com seu novo custo.
                 fringe.push((next_state, new_actions), new_cost)
 
-    # Se a fronteira ficar vazia e o objetivo não for encontrado, retorna uma lista vazia.
+    #se a fronteira ficar vazia e o objetivo não for encontrado
     return []
     #util.raiseNotDefined()
 
@@ -243,52 +230,45 @@ def nullHeuristic(state, problem=None) -> float:
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directions]:
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-     # Inicializa a fronteira usando uma Fila de Prioridade.
-    # O item armazenado será (estado, ações).
-    # A prioridade será o custo_f = custo_g (custo do caminho) + custo_h (heurística).
+     #fila de Prioridade
     fringe = util.PriorityQueue()
 
-    # Este dicionário substitui o conjunto 'visited'. Ele armazena o menor custo (g)
-    # encontrado até agora para chegar a cada estado. Isso nos permite atualizar
-    # um nó se encontrarmos um caminho melhor para ele.
     closed = {}
 
-    # Configuração inicial para o estado de partida
+    #conf inicial do estado de partida
     start_state = problem.getStartState()
     start_g_cost = 0
     
-    # Adiciona o nó inicial à fronteira
+    #add o nó inicial na fronteira
     fringe.push((start_state, [], start_g_cost), start_g_cost + heuristic(start_state, problem))
 
     while not fringe.isEmpty():
-        # Pega o nó com o menor custo f
+        #pega o nó com o menor custo f
         current_state, actions, g_cost = fringe.pop()
 
-        # Se já encontramos um caminho para este estado e o caminho que acabamos de
-        # retirar é mais caro, nós o ignoramos e continuamos.
+        # Se um caminho para este estado jpa foi encontrado e o caminho recente encontrado e o caminho encontrado é mais caro].
         if current_state in closed and g_cost >= closed[current_state]:
+            #so ignora
             continue
 
-        # Marca o estado como "fechado" com seu custo ótimo até agora.
+        #marca o estado com o custo ótimo
         closed[current_state] = g_cost
 
-        # Se é o objetivo, encontramos o caminho ótimo.
+        #se é o objetivo ent o caminhoé  ótimo
         if problem.isGoalState(current_state):
             return actions
 
-        # Gera os sucessores
+        #gera sucessores
         for next_state, action, step_cost in problem.getSuccessors(current_state):
             new_g_cost = g_cost + step_cost
             
-            # Se não vimos este nó antes, ou se encontramos um caminho mais barato para ele,
-            # nós o adicionamos à fronteira para ser explorado.
             if next_state not in closed or new_g_cost < closed[next_state]:
                 new_h_cost = heuristic(next_state, problem)
                 new_f_cost = new_g_cost + new_h_cost
                 new_actions = actions + [action]
                 fringe.push((next_state, new_actions, new_g_cost), new_f_cost)
 
-    # Retorna uma lista vazia se nenhum caminho for encontrado
+    #retorna uma lista vazia se nenhum caminho for encontrado
     return []
 
     #util.raiseNotDefined()
